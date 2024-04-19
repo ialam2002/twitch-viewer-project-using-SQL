@@ -1,0 +1,71 @@
+-- Explore the stream table
+SELECT * FROM stream LIMIT 20;
+-- Explore the chat table
+SELECT * FROM chat LIMIT 20;
+-- Find the unique games from the stream table
+SELECT DISTINCT game FROM stream;
+
+-- Find the unique channels from the stream table
+SELECT DISTINCT channel FROM stream;
+
+-- Find the most popular games and rank them
+SELECT game, COUNT(*) FROM stream
+GROUP BY game
+ORDER BY COUNT(*) DESC;
+
+-- League of Legends is the most popular, create list of countries and number of LOL viewers in each country
+
+SELECT country, COUNT(*) FROM stream
+WHERE game = 'League of Legends'
+GROUP BY country
+ORDER BY COUNT(*) DESC;
+
+-- List the players used to view streams
+
+SELECT player, COUNT(*) FROM stream
+GROUP BY player
+ORDER BY COUNT(*) DESC;
+
+-- create new column genre 
+SELECT game,
+ CASE
+  WHEN game = 'Dota 2'
+      THEN 'MOBA'
+  WHEN game = 'League of Legends' 
+      THEN 'MOBA'
+  WHEN game = 'Heroes of the Storm'
+      THEN 'MOBA'
+    WHEN game = 'Counter-Strike: Global Offensive'
+      THEN 'FPS'
+    WHEN game = 'DayZ'
+      THEN 'Survival'
+    WHEN game = 'ARK: Survival Evolved'
+      THEN 'Survival'
+  ELSE 'Other'
+  END AS 'genre',
+  COUNT(*)
+FROM stream
+GROUP BY 1
+ORDER BY 3 DESC;
+
+
+-- FInd the hours of stream and view count each hour
+SELECT strftime('%H', time),
+   COUNT(*)
+FROM stream
+GROUP BY 1;
+
+-- Filter to US
+SELECT strftime('%H', time),
+   COUNT(*)
+FROM stream
+WHERE country = 'US'
+GROUP BY 1;
+
+-- Join stream and chat table on device_id
+SELECT *
+FROM stream
+JOIN chat
+  ON stream.device_id = chat.device_id;
+
+
